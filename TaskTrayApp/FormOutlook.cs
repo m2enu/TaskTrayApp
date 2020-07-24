@@ -104,9 +104,17 @@ namespace TaskTrayApp
             var cc = mail.Recipients.Add(string.Join("; ", this.Cc));
             cc.Type = (int)OlMailRecipientType.olCC;
             mail.Recipients.ResolveAll();
-            mail.Subject = this.Subject;
-            mail.Body = string.Join("\r\n", this.Body);
+            mail.Subject = ParseCommandString(this.Subject);
+            mail.Body = ParseCommandString(string.Join("\r\n", this.Body));
             mail.Display(false);
+        }
+
+        public static string ParseCommandString(string msg)
+        {
+            // TODO: Only ${DATE} command is available.
+            var _now = DateTime.Now;
+            var ret = msg.Replace("${DATE}", _now.ToString("MM/dd"));
+            return ret;
         }
 
     }
