@@ -15,15 +15,10 @@ using System.Windows.Forms;
 
 namespace TaskTrayApp
 {
-    public partial class FormClipboard : Form, ITaskTrayWrapper
+    public partial class FormClipboard : ITaskTrayWrapper
     {
 
         private readonly ClipboardConfig config = new ClipboardConfig();
-
-        public FormClipboard()
-        {
-            InitializeComponent();
-        }
 
         public ToolStripMenuItem MenuItem()
         {

@@ -16,15 +16,10 @@ using System.Windows.Forms;
 
 namespace TaskTrayApp
 {
-    public partial class FormLauncher : Form, ITaskTrayWrapper
+    public partial class FormLauncher : ITaskTrayWrapper
     {
 
         public readonly LauncherConfig config = new LauncherConfig();
-
-        public FormLauncher()
-        {
-            InitializeComponent();
-        }
 
         public ToolStripMenuItem MenuItem()
         {

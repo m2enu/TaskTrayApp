@@ -17,15 +17,10 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace TaskTrayApp
 {
-    public partial class FormOutlook : Form, ITaskTrayWrapper
+    public partial class FormOutlook : ITaskTrayWrapper
     {
 
         private readonly OutlookConfig config = new OutlookConfig();
-
-        public FormOutlook()
-        {
-            InitializeComponent();
-        }
 
         public ToolStripMenuItem MenuItem()
         {
