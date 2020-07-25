@@ -17,7 +17,7 @@ using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace TaskTrayApp
 {
-    public partial class FormOutlook : ITaskTrayWrapper
+    public partial class ProcOutlook : IProcWrapper
     {
 
         private readonly OutlookConfig config = new OutlookConfig();

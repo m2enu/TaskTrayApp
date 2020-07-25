@@ -18,11 +18,10 @@ namespace TaskTrayApp
     public partial class FormMain : Form
     {
 
-        private readonly TaskTrayFormContainer container =
-            new TaskTrayFormContainer(
-                new FormClipboard(),
-                new FormOutlook(),
-                new FormLauncher()
+        private readonly ProcContainer container = new ProcContainer(
+                new ProcClipboard(),
+                new ProcOutlook(),
+                new ProcLauncher()
             );
 
         public FormMain()

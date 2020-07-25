@@ -15,7 +15,7 @@ using System.Windows.Forms;
 
 namespace TaskTrayApp
 {
-    public partial class FormClipboard : ITaskTrayWrapper
+    public partial class ProcClipboard : IProcWrapper
     {
 
         private readonly ClipboardConfig config = new ClipboardConfig();

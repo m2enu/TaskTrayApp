@@ -16,7 +16,7 @@ using System.Windows.Forms;
 
 namespace TaskTrayApp
 {
-    public partial class FormLauncher : ITaskTrayWrapper
+    public partial class ProcLauncher : IProcWrapper
     {
 
         public readonly LauncherConfig config = new LauncherConfig();

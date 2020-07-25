@@ -13,45 +13,45 @@ using System.Windows.Forms;
 namespace TaskTrayApp
 {
 
-    public interface ITaskTrayWrapper
+    public interface IProcWrapper
     {
         public ToolStripMenuItem MenuItem();
         public void SetUp();
         public void TearDown();
     }
 
-    public class TaskTrayFormContainer
+    public class ProcContainer
     {
 
-        private readonly ReadOnlyCollection<ITaskTrayWrapper> forms;
+        private readonly ReadOnlyCollection<IProcWrapper> members;
 
-        public TaskTrayFormContainer(params ITaskTrayWrapper[] source)
+        public ProcContainer(params IProcWrapper[] source)
         {
             if (0 == source.Length)
             {
                 throw new ArgumentException("Pass at least 1 item");
             }
-            forms = new ReadOnlyCollection<ITaskTrayWrapper>(source.ToList());
+            members = new ReadOnlyCollection<IProcWrapper>(source.ToList());
         }
 
         public IEnumerable<ToolStripMenuItem> MenuItem()
         {
-            return forms.Select(x => x.MenuItem());
+            return members.Select(x => x.MenuItem());
         }
 
         public void SetUp()
         {
-            foreach (var f in forms)
+            foreach (var member in members)
             {
-                f.SetUp();
+                member.SetUp();
             }
         }
 
         public void TearDown()
         {
-            foreach (var f in forms)
+            foreach (var member in members)
             {
-                f.TearDown();
+                member.TearDown();
             }
         }
 
