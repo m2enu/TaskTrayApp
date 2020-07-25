@@ -21,7 +21,8 @@ namespace TaskTrayApp
         private readonly TaskTrayFormContainer container =
             new TaskTrayFormContainer(
                 new FormClipboard(),
-                new FormOutlook()
+                new FormOutlook(),
+                new FormLauncher()
             );
 
         public FormMain()
