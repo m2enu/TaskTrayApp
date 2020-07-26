@@ -8,17 +8,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Windows.Forms;
 
 namespace TaskTrayApp
 {
-    public partial class ProcClipboard : IProcWrapper
+    public class ClipboardConfig : IProcConfig
     {
 
-        private readonly ClipboardConfig config = new ClipboardConfig();
+        public IList<string> Clipboard { get; set; }
+
+        public void Load()
+        {
+            var ret = JsonLoader.FromFile<ClipboardConfig>("config/Clipboard.json");
+            this.Clipboard = ret.Clipboard;
+        }
 
         public ToolStripMenuItem MenuItem()
         {
@@ -26,61 +31,36 @@ namespace TaskTrayApp
             {
                 Text = "Clipboard",
             };
-            foreach (var text in config.Text)
-            {
-                var subMenu = new ToolStripMenuItem
-                {
-                    Text = text,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                };
-                subMenu.Click += new EventHandler(MenuClicked);
-                topMenu.DropDownItems.Add(subMenu);
-            }
+            topMenu.DropDownItems.AddRange(this.Clipboard
+                .Select(x => new ClipboardConfigItem(x))
+                .Select(x => new ProcToolStripMenuItem<ClipboardConfigItem>(x))
+                .ToArray());
             return topMenu;
         }
 
-        public void SetUp()
-        {
-            config.Load();
-        }
-
-        public void TearDown()
-        {
-        }
-
-        public void MenuClicked(object sender, EventArgs e)
-        {
-            var menu = sender as ToolStripMenuItem;
-            Clipboard.SetText(menu.Text + "\r\n");
-        }
     }
 
-    public class ClipboardConfig
+    public class ClipboardConfigItem : IProcConfigItem
     {
 
-        public IList<string> Text { get; set; }
-
-        public bool Load()
+        public ClipboardConfigItem(string txt)
         {
-            var ret = LoadInternal("config/clipboard.json");
-            var cfg = ret.Item2;
-            this.Text = cfg.Text;
-            return ret.Item1;
+            this.Text = txt;
         }
 
-        private static Tuple<bool, ClipboardConfig> LoadInternal(string filename)
+        public string Text { get; set; }
+
+        public string MenuText
         {
-            if (!File.Exists(filename))
+            get
             {
-                var ret = new ClipboardConfig
-                {
-                    Text = new List<string> { "Config file load failed." },
-                };
-                return Tuple.Create(true, ret);
+                return this.Text;
             }
-            var jsonStr = File.ReadAllText(filename);
-            var cfg = JsonSerializer.Deserialize<ClipboardConfig>(jsonStr);
-            return Tuple.Create(false, cfg);
+        }
+
+        public void Execute()
+        {
+            Clipboard.SetText(this.Text + "\r\n");
         }
 
     }

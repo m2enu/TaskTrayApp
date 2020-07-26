@@ -3,24 +3,28 @@
  * Released under the MIT License
  * https://github.com/m2enu/TaskTrayApp/blob/master/LICENSE.txt
  ******************************************************************************/
-using Microsoft.Office.Interop.Outlook;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace TaskTrayApp
 {
-    public partial class ProcOutlook : IProcWrapper
+    public class OutlookConfig : IProcConfig
     {
 
-        private readonly OutlookConfig config = new OutlookConfig();
+        public Dictionary<string, OutlookConfigItem> Outlook { get; set; }
+
+        public void Load()
+        {
+            var ret = JsonLoader.FromFile<OutlookConfig>("config/Outlook.json");
+            this.Outlook = ret.Outlook;
+        }
 
         public ToolStripMenuItem MenuItem()
         {
@@ -28,83 +32,49 @@ namespace TaskTrayApp
             {
                 Text = "Outlook",
             };
-            foreach (var item in config.Items)
-            {
-                var subMenu = new ToolStripMenuItem
-                {
-                    Text = item.Key,
-                    TextAlign = ContentAlignment.MiddleLeft,
-                };
-                subMenu.Click += new EventHandler(OnClicked);
-                topMenu.DropDownItems.Add(subMenu);
-            }
+            topMenu.DropDownItems.AddRange(this.Outlook.Values
+                .Select(x => new ProcToolStripMenuItem<OutlookConfigItem>(x))
+                .ToArray());
             return topMenu;
-
         }
 
-        public void SetUp()
-        {
-            config.Load();
-        }
-
-        public void TearDown()
-        {
-        }
-
-        public void OnClicked(object sender, EventArgs e)
-        {
-            var menu = sender as ToolStripMenuItem;
-            var item = config.Items[menu.Text];
-            item.CreateNewMail();
-        }
     }
 
-    public class OutlookConfig
+    public class OutlookConfigItem : IProcConfigItem
     {
 
-        public Dictionary<string, OutlookConfigItem> Items { get; set; }
-
-        public bool Load()
-        {
-            var ret = Load("config/outlook.json");
-            var cfg = ret.Item2;
-            this.Items = cfg.Items;
-            return ret.Item1;
-        }
-
-        private static Tuple<bool, OutlookConfig> Load(string filename)
-        {
-            var jsonStr = File.ReadAllText(filename);
-            var cfg = JsonSerializer.Deserialize<OutlookConfig>(jsonStr);
-            return Tuple.Create(false, cfg);
-        }
-    }
-
-    public class OutlookConfigItem
-    {
+        public string Title { get; set; }
         public IList<string> To { get; set; }
         public IList<string> Cc { get; set; }
         public string Subject { get; set; }
         public IList<string> Body { get; set; }
 
-        public void CreateNewMail()
+        public string MenuText
+        {
+            get
+            {
+                return this.Title;
+            }
+        }
+
+        public void Execute()
         {
             var app = new Outlook.Application();
-            if (!(app.CreateItem(OlItemType.olMailItem) is MailItem mail))
+            if (!(app.CreateItem(Outlook.OlItemType.olMailItem) is Outlook.MailItem mail))
             {
                 return;
             }
             var to = mail.Recipients.Add(string.Join("; ", this.To));
-            to.Type = (int)OlMailRecipientType.olTo;
+            to.Type = (int)Outlook.OlMailRecipientType.olTo;
             var cc = mail.Recipients.Add(string.Join("; ", this.Cc));
-            cc.Type = (int)OlMailRecipientType.olCC;
+            cc.Type = (int)Outlook.OlMailRecipientType.olCC;
             mail.Recipients.ResolveAll();
             mail.Subject = ParseCommandString(this.Subject);
             mail.Body = ParseCommandString(string.Join("\r\n", this.Body));
             mail.Display(false);
         }
 
-        public static string ParseCommandString(string msg)
+        protected static string ParseCommandString(string msg)
         {
             // TODO: Only ${DATE} command is available.
             var _now = DateTime.Now;
@@ -113,4 +83,5 @@ namespace TaskTrayApp
         }
 
     }
+
 }

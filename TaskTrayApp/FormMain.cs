@@ -19,9 +19,9 @@ namespace TaskTrayApp
     {
 
         private readonly ProcContainer container = new ProcContainer(
-                new ProcClipboard(),
-                new ProcOutlook(),
-                new ProcLauncher()
+                new ProcBase<ClipboardConfig>(),
+                new ProcBase<OutlookConfig>(),
+                new ProcBase<LauncherConfig>()
             );
 
         public FormMain()
