@@ -64,13 +64,12 @@ namespace TaskTrayApp
             {
                 return;
             }
-            var to = mail.Recipients.Add(string.Join("; ", this.To));
-            to.Type = (int)Outlook.OlMailRecipientType.olTo;
-            var cc = mail.Recipients.Add(string.Join("; ", this.Cc));
-            cc.Type = (int)Outlook.OlMailRecipientType.olCC;
+            mail.To = string.Join("; ", this.To);
+            mail.CC = string.Join("; ", this.Cc);
             mail.Recipients.ResolveAll();
             mail.Subject = ParseCommandString(this.Subject);
             mail.Body = ParseCommandString(string.Join("\r\n", this.Body));
+            mail.BodyFormat = Outlook.OlBodyFormat.olFormatPlain;
             mail.Display(false);
         }
 
