@@ -28,20 +28,31 @@ namespace TaskTrayApp
         {
             InitializeComponent();
 
+            SetupMenu();
+        }
+
+        private void SetupMenu()
+        {
+            // Remain misc menu (Reload, Exit)
+            while (contextMenuStripFile.Items.Count > 2)
+            {
+                contextMenuStripFile.Items.RemoveAt(0);
+            }
+
             container.SetUp();
             var n = 0;
             foreach (var i in container.MenuItem())
             {
-                contextMenuStrip1.Items.Insert(n++, i);
+                contextMenuStripFile.Items.Insert(n++, i);
             }
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private void OnFormMainLoad(object sender, EventArgs e)
         {
             this.Visible = false;
         }
 
-        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void OnFormMainClosing(object sender, FormClosingEventArgs e)
         {
             if (CloseReason.ApplicationExitCall != e.CloseReason)
             {
@@ -50,11 +61,16 @@ namespace TaskTrayApp
             }
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        private void OnClickedExitMenu(object sender, EventArgs e)
         {
             container.TearDown();
             notifyIcon1.Dispose();
             Application.Exit();
+        }
+
+        private void OnClickedUpdateMenu(object sender, EventArgs e)
+        {
+            SetupMenu();
         }
     }
 }
