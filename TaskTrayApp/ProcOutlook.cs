@@ -19,6 +19,7 @@ namespace TaskTrayApp
     {
 
         public Dictionary<string, OutlookConfigItem> Outlook { get; set; }
+            = new Dictionary<string, OutlookConfigItem>();
 
         public void Load()
         {
@@ -43,11 +44,11 @@ namespace TaskTrayApp
     public class OutlookConfigItem : IProcConfigItem
     {
 
-        public string Title { get; set; }
-        public IList<string> To { get; set; }
-        public IList<string> Cc { get; set; }
-        public string Subject { get; set; }
-        public IList<string> Body { get; set; }
+        public string Title { get; set; } = "";
+        public IList<string> To { get; set; } = new List<string>();
+        public IList<string> Cc { get; set; } = new List<string>();
+        public string Subject { get; set; } = "";
+        public IList<string> Body { get; set; } = new List<string>();
 
         public string MenuText
         {

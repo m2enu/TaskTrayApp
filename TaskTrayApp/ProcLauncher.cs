@@ -19,6 +19,7 @@ namespace TaskTrayApp
     {
 
         public Dictionary<string, LauncherConfigItem> Launcher { get; set; }
+            = new Dictionary<string, LauncherConfigItem>();
 
         public void Load()
         {
@@ -43,9 +44,9 @@ namespace TaskTrayApp
     public class LauncherConfigItem : IProcConfigItem
     {
 
-        public string Title { get; set; }
-        public string FileName { get; set; }
-        public IList<string> Arguments { get; set; }
+        public string Title { get; set; } = "";
+        public string FileName { get; set; } = "";
+        public IList<string> Arguments { get; set; } = new List<string>();
 
         public string MenuText
         {
@@ -58,7 +59,15 @@ namespace TaskTrayApp
         public void Execute()
         {
             var arg = string.Join(" ", this.Arguments);
-            Process.Start(this.FileName, arg);
+            try
+            {
+                Process.Start(this.FileName, arg);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
     }

@@ -17,7 +17,7 @@ namespace TaskTrayApp
     public class ClipboardConfig : IProcConfig
     {
 
-        public IList<string> Clipboard { get; set; }
+        public IList<string> Clipboard { get; set; } = new List<string>();
 
         public void Load()
         {

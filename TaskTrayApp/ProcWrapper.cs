@@ -85,6 +85,7 @@ namespace TaskTrayApp
     public static class JsonLoader
     {
         public static T FromFile<T>(string FileName)
+            where T: IProcConfig, new()
         {
             try
             {
@@ -98,7 +99,7 @@ namespace TaskTrayApp
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             // TODO: implement procedure when failed deserialize.
-            return default;
+            return new T();
         }
     }
 
