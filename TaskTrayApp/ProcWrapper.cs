@@ -82,27 +82,6 @@ namespace TaskTrayApp
 
     }
 
-    public static class JsonLoader
-    {
-        public static T FromFile<T>(string FileName)
-            where T: IProcConfig, new()
-        {
-            try
-            {
-                var jsonStr = File.ReadAllText(FileName);
-                var Config = JsonSerializer.Deserialize<T>(jsonStr);
-                return Config;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            // TODO: implement procedure when failed deserialize.
-            return new T();
-        }
-    }
-
     public class ProcContainer
     {
 
