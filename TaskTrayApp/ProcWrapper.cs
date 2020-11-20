@@ -18,24 +18,24 @@ namespace TaskTrayApp
 
     public interface IProcWrapper
     {
-        public ToolStripMenuItem MenuItem();
-        public void SetUp();
-        public void TearDown();
+        ToolStripMenuItem MenuItem();
+        void SetUp();
+        void TearDown();
     }
 
     public interface IProcConfig
     {
 
-        public void Load();
-        public ToolStripMenuItem MenuItem();
+        void Load();
+        ToolStripMenuItem MenuItem();
 
     }
 
     public interface IProcConfigItem
     {
 
-        public string MenuText { get; }
-        public void Execute();
+        string MenuText { get; }
+        void Execute();
 
     }
 
